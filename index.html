@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Café Central – Tapas & Cafelitos</title>
+  <link rel="stylesheet" href="style.css" />
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.185.1/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.185.1/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+<body>
+
+  <nav id="site-nav">
+    <div class="nav-logo">CAFÉ CENTRAL</div>
+    <ul class="nav-links">
+      <li><a href="#hero">Inicio</a></li>
+      <li><a href="#menu">Menú</a></li>
+      <li><a href="#cafe">El Café</a></li>
+      <li><a href="#galerie">Galería</a></li>
+      <li><a href="#avis">Opiniones</a></li>
+      <li><a href="#contact">Contacto</a></li>
+    </ul>
+    <a href="#contact" class="nav-cta">Reservar</a>
+    <button id="nav-toggle" aria-label="Abrir el menú">☰</button>
+  </nav>
+
+  <header id="hero">
+    <div class="hero-content">
+      <h1 class="hero-title">CAFÉ CENTRAL</h1>
+      <p class="hero-subtitle">TAPAS &amp; CAFELITOS</p>
+      <p class="hero-tagline">Un café, unas tapas, un ambiente.</p>
+      <div class="hero-buttons">
+        <a href="#menu" class="btn btn-primary">Ver el menú</a>
+        <a href="#contact" class="btn btn-outline">Reservar una mesa</a>
+      </div>
+    </div>
+    </header>
+
+  <div id="journey-spacer"></div>
+
+  <main>
+    <section id="menu" class="menu-section">
+      <h2 class="section-title">Nuestro menú</h2>
+      <div class="menu-tabs" id="menu-tabs"></div>
+      <div id="menu-grid"></div>
+    </section>
+
+    <section id="cafe" class="cafe-section">
+      <div class="cafe-content">
+        <h2 class="section-title">Nuestro café</h2>
+        <p class="cafe-text">Café Central – Tapas &amp; Cafelitos es un lugar acogedor donde se encuentran el café, las tapas y la buena compañía.</p>
+        <div class="cafe-features">
+          <span class="feature-tag">Ambiente acogedor</span>
+          <span class="feature-tag">Café</span>
+          <span class="feature-tag">Tapas</span>
+          <span class="feature-tag">Desayuno</span>
+          <span class="feature-tag">Salón</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="galerie" class="gallery-section">
+      <h2 class="section-title">Galería</h2>
+      <div class="gallery-grid" id="gallery-grid"></div>
+    </section>
+
+    <section id="avis" class="reviews-section">
+      <h2 class="section-title">Opiniones de nuestros clientes</h2>
+      <p class="reviews-source">Opiniones auténticas dejadas en Google</p>
+      <div class="reviews-grid" id="reviews-grid"></div>
+    </section>
+
+    <section id="contact" class="contact-section">
+      <h2 class="section-title">Contacto</h2>
+      <div class="contact-content">
+        <p class="contact-brand">CAFÉ CENTRAL<br><span>TAPAS &amp; CAFELITOS</span></p>
+        <ul class="contact-info">
+          <li><strong>Dirección</strong><span>[DIRECCIÓN POR RELLENAR]</span></li>
+          <li><strong>Teléfono</strong><span>[TELÉFONO POR RELLENAR]</span></li>
+          <li><strong>Email</strong><span>[EMAIL POR RELLENAR]</span></li>
+        </ul>
+        <div class="contact-buttons">
+          <a href="mailto:EMAIL_A_RELLENAR" class="btn btn-primary">Contactar</a>
+          <a href="https://maps.google.com" target="_blank" rel="noopener" class="btn btn-outline">Cómo llegar</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="horaires" class="hours-section">
+      <h2 class="section-title">Horario</h2>
+      <ul class="hours-list" id="hours-list"></ul>
+    </section>
+  </main>
+
+  <footer id="site-footer">
+    <p>CAFÉ CENTRAL — TAPAS &amp; CAFELITOS</p>
+    <p>© 2026 Café Central – Todos los derechos reservados.</p>
+  </footer>
+
+  <div id="lightbox" class="lightbox">
+    <button id="lightbox-close" class="lightbox-close" aria-label="Cerrar">✕</button>
+    <div class="lightbox-content" id="lightbox-content"></div>
+  </div>
+
+  <script type="module" src="main.js"></script>
+  <script type="module" src="ui.js"></script>
+</body>
+</html>
