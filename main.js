@@ -34,9 +34,10 @@ const fullPixelRatio = performanceTier === 'high'
     ? Math.min(window.devicePixelRatio, 1.5)
     : Math.min(window.devicePixelRatio, 1.5); // relevé de 1 à 1.5 : meilleure fidélité visuelle sur mobile bas de gamme, coût encore raisonnable
 const journeyPixelRatio = Math.min(fullPixelRatio, 1); // toujours réduit pendant le zoom, quel que soit le palier
+const shadowMapSize = performanceTier === 'low' ? 256 : 512; // résolution des ombres réduite sur mobile faible, jamais leur présence
 renderer.setPixelRatio(fullPixelRatio);
 
-renderer.shadowMap.enabled = performanceTier !== 'low'; // ombres coupées uniquement sur les appareils les plus limités
+renderer.shadowMap.enabled = true; // toujours activées, sur tous les appareils — nécessaires pour un rendu de couleur cohérent
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.1;
@@ -165,7 +166,7 @@ function createPendantLight(x, z) {
   const pointLight = new THREE.PointLight(0xffaa55, 30 * roomLightScale, 8, 2);
   pointLight.position.set(x, 2.6, z);
     pointLight.castShadow = true;
-  pointLight.shadow.mapSize.set(512, 512); // suffisant à cette échelle, moitié moins coûteux que 1024
+  pointLight.shadow.mapSize.set(shadowMapSize, shadowMapSize);
   scene.add(pointLight);
 
   // Le fil de la lampe
@@ -1892,7 +1893,7 @@ function createFloodlight(x, y, z, targetX, targetY, targetZ) {
   spot.position.set(x, y, z);
   spot.target.position.set(targetX, targetY, targetZ);
   spot.castShadow = true;
-  spot.shadow.mapSize.set(512, 512);
+    spot.shadow.mapSize.set(shadowMapSize, shadowMapSize);
   scene.add(spot);
   scene.add(spot.target);
 }
