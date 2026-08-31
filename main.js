@@ -1731,7 +1731,7 @@ function createCafeFacade() {
   // Même hiérarchie que le logo principal du site : titre "CAFÉ CENTRAL"
   // (empilé sur 2 lignes pour rester lisible dans le cercle) + sous-titre
   // jaune "TAPAS & CAFELITOS" en dessous, plus petit.
-  function createFacadeLogoCircle(x, y, z, radius, line1, line2, subtitle) {
+    function createFacadeLogoCircle(x, y, z, radius, line1, line2, subtitle) {
     const goldMat = new THREE.MeshStandardMaterial({ color: 0xb8843f, roughness: 0.3, metalness: 0.7 });
     const ring = new THREE.Mesh(new THREE.TorusGeometry(radius, radius * 0.025, 10, 48), goldMat);
     ring.position.set(x, y, z);
@@ -1743,20 +1743,39 @@ function createCafeFacade() {
     const ctx = canvas.getContext('2d');
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.shadowColor = 'rgba(0,0,0,0.35)';
+    ctx.shadowColor = 'rgba(0,0,0,0.4)';
     ctx.shadowBlur = 5;
 
-    // Titre — même doré que le cadre
-    ctx.fillStyle = '#d8b878';
-    ctx.font = 'bold 54px Georgia, "Times New Roman", serif';
-    ctx.fillText(line1, 200, 130);
-    ctx.font = 'bold 40px Georgia, "Times New Roman", serif';
-    ctx.fillText(line2, 200, 182);
+    // Réduit la police de chaque ligne jusqu'à ce qu'elle tienne réellement
+    // dans le cercle à cette hauteur (mesuré, pas deviné) — le cercle est
+    // plus étroit en haut/en bas qu'au milieu.
+    function fitText(text, centerY, maxSize) {
+      const offset = Math.abs(centerY - 200);
+      const safeRadius = 175;
+      const maxWidth = 2 * Math.sqrt(Math.max(0, safeRadius * safeRadius - offset * offset)) * 0.9;
+      let size = maxSize;
+      do {
+        ctx.font = `bold ${size}px Georgia, "Times New Roman", serif`;
+        size -= 2;
+      } while (ctx.measureText(text).width > maxWidth && size > 10);
+      return size + 2;
+    }
 
-    // Sous-titre — jaune, plus petit, comme sur le logo principal du site
+    // "CAFÉ" et "CENTRAL" — blanc
+    ctx.fillStyle = '#f5f0e6';
+    const size1 = fitText(line1, 140, 60);
+    ctx.font = `bold ${size1}px Georgia, "Times New Roman", serif`;
+    ctx.fillText(line1, 200, 140);
+
+    const size2 = fitText(line2, 195, 50);
+    ctx.font = `bold ${size2}px Georgia, "Times New Roman", serif`;
+    ctx.fillText(line2, 200, 195);
+
+    // Sous-titre — jaune, plus petit
     ctx.fillStyle = '#ffcc33';
-    ctx.font = '21px Georgia, "Times New Roman", serif';
-    ctx.fillText(subtitle, 200, 228);
+    const size3 = fitText(subtitle, 250, 26);
+    ctx.font = `${size3}px Georgia, "Times New Roman", serif`;
+    ctx.fillText(subtitle, 200, 250);
 
     const texture = new THREE.CanvasTexture(canvas);
     const textPlane = new THREE.Mesh(
@@ -1799,7 +1818,7 @@ function createCafeFacade() {
   // Centre vertical exact du vitrage (identique pour les 3 fenêtres)
   const glassCenterY = baseHeight + (facadeHeight - baseHeight - 0.8) / 2;
 
-    createFacadeLogoCircle(xWinC, glassCenterY, 0.03, 0.65, 'CAFÉCENTRAL', 'TAPAS & CAFELITOS');
+        createFacadeLogoCircle(xWinC, glassCenterY, 0.03, 0.45, 'CAFÉ', 'CENTRAL', 'TAPAS & CAFELITOS');
   createFacadeGlassText(xWinL, glassCenterY, 0.03, 'CAFÉ', 44, 1.0);
   createFacadeGlassText(xWinR, glassCenterY, 0.03, 'CAFÉ', 44, 1.0);
 
@@ -2390,13 +2409,13 @@ const journeyStartTarget = new THREE.Vector3(0, 1.5, 1.9);
 
 const journeyPositionCurve = new THREE.CatmullRomCurve3([
   journeyStartPos,
-  new THREE.Vector3(0, 2.2, 4),
+  new THREE.Vector3(0, 2.6, 6.4),  // reculée mais RESTE à l'intérieur (avant la façade à z=6.8)
   new THREE.Vector3(0, 2.0, 10),
 ]);
 const journeyTargetCurve = new THREE.CatmullRomCurve3([
   journeyStartTarget,
   new THREE.Vector3(0, 1.1, -1.2),
-  new THREE.Vector3(0, 1.7, 6.5),
+  new THREE.Vector3(0, 1.775, 6.8), // pile la hauteur/profondeur du logo circulaire de la façade
 ]);
 
 // Direction fixe (départ -> cible d'origine), utilisée pour reculer/avancer
