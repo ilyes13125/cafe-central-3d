@@ -1727,28 +1727,36 @@ function createCafeFacade() {
       createFacadePlanter(xWinL, 0.55, 1.0); // vitrine gauche
   createFacadePlanter(xWinR, 0.55, 1.0); // vitrine droite
 
-   // --- Logo circulaire doré au centre de la vitrine centrale ---
-  function createFacadeLogoCircle(x, y, z, radius, line1, line2) {
+     // --- Logo circulaire doré au centre de la vitrine centrale ---
+  // Même hiérarchie que le logo principal du site : titre "CAFÉ CENTRAL"
+  // (empilé sur 2 lignes pour rester lisible dans le cercle) + sous-titre
+  // jaune "TAPAS & CAFELITOS" en dessous, plus petit.
+  function createFacadeLogoCircle(x, y, z, radius, line1, line2, subtitle) {
     const goldMat = new THREE.MeshStandardMaterial({ color: 0xb8843f, roughness: 0.3, metalness: 0.7 });
     const ring = new THREE.Mesh(new THREE.TorusGeometry(radius, radius * 0.025, 10, 48), goldMat);
     ring.position.set(x, y, z);
     facade.add(ring);
 
-    // Texte à fond transparent (rien dessiné autour), pour laisser voir le
-    // verre entre les lettres et dans le reste du cercle
     const canvas = document.createElement('canvas');
     canvas.width = 400;
     canvas.height = 400;
     const ctx = canvas.getContext('2d');
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillStyle = '#d8b878';
     ctx.shadowColor = 'rgba(0,0,0,0.35)';
     ctx.shadowBlur = 5;
-    ctx.font = 'bold 66px Georgia, "Times New Roman", serif';
-    ctx.fillText(line1, 200, 172);
-    ctx.font = 'bold 48px Georgia, "Times New Roman", serif';
-    ctx.fillText(line2, 200, 240);
+
+    // Titre — même doré que le cadre
+    ctx.fillStyle = '#d8b878';
+    ctx.font = 'bold 54px Georgia, "Times New Roman", serif';
+    ctx.fillText(line1, 200, 130);
+    ctx.font = 'bold 40px Georgia, "Times New Roman", serif';
+    ctx.fillText(line2, 200, 182);
+
+    // Sous-titre — jaune, plus petit, comme sur le logo principal du site
+    ctx.fillStyle = '#ffcc33';
+    ctx.font = '21px Georgia, "Times New Roman", serif';
+    ctx.fillText(subtitle, 200, 228);
 
     const texture = new THREE.CanvasTexture(canvas);
     const textPlane = new THREE.Mesh(
@@ -1791,7 +1799,7 @@ function createCafeFacade() {
   // Centre vertical exact du vitrage (identique pour les 3 fenêtres)
   const glassCenterY = baseHeight + (facadeHeight - baseHeight - 0.8) / 2;
 
-  createFacadeLogoCircle(xWinC, glassCenterY, 0.03, 0.65, 'CAFÉ', 'CENTRAL');
+    createFacadeLogoCircle(xWinC, glassCenterY, 0.03, 0.65, 'CAFÉCENTRAL', 'TAPAS & CAFELITOS');
   createFacadeGlassText(xWinL, glassCenterY, 0.03, 'CAFÉ', 44, 1.0);
   createFacadeGlassText(xWinR, glassCenterY, 0.03, 'CAFÉ', 44, 1.0);
 
@@ -2347,10 +2355,7 @@ roof.castShadow = true;
 roof.receiveShadow = true;
 scene.add(roof);
 
-// 2 gros projecteurs extérieurs, en haut à gauche et à droite de la vue d'accueil,
-// pointés sur le restaurant
-createFloodlight(-9, 8, 9, -0.24, 3.5, 1.9);
-createFloodlight(9, 8, 9, -0.24, 3.5, 1.9);
+
 // ---------------------------------------------------------
 // CAMÉRA
 // ---------------------------------------------------------
@@ -2460,12 +2465,12 @@ function updateResponsiveScene() {
 
   journeyStartPos.copy(journeyStartTarget).addScaledVector(journeyStartDir, distance);
 
-  // Sur écran étroit/vertical, remonte la cible et la caméra pour que le
-  // bâtiment remplisse davantage la hauteur disponible, au lieu de laisser
-  // un grand vide au-dessus
-  const verticalLift = narrowT * 1.1;
-  journeyStartTarget.y = 1.5 + verticalLift;
-  journeyStartPos.y += verticalLift;
+    // Sur écran étroit/vertical, le FOV élargi (nécessaire pour la largeur)
+  // montre aussi beaucoup plus de hauteur — dont une grande partie de sol
+  // vide, puisque la caméra reste en plongée. On aplatit donc l'angle :
+  // cible remontée vers le centre du bâtiment + caméra rapprochée en hauteur.
+  journeyStartTarget.y = 1.5 + narrowT * 0.9;
+  journeyStartPos.y = 5 - narrowT * 1.8;
 
   renderer.setSize(window.innerWidth, window.innerHeight);
   needsRender = true;
