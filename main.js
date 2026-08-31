@@ -8,7 +8,6 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x15100c); // fond chaud très sombre
-
 const camera = new THREE.PerspectiveCamera(
   50,
   window.innerWidth / window.innerHeight,
@@ -23,7 +22,7 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 // Détection simple du niveau de puissance de l'appareil, pour adapter
 // automatiquement la résolution et les ombres — HIGH par défaut (la plupart
 // des ordinateurs), MEDIUM/LOW seulement sur mobile avec peu de coeurs CPU.
-const isMobileDevice = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+const isMobileDevice = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.innerWidth < 700;
 const cpuCores = navigator.hardwareConcurrency || 4;
 let performanceTier = 'high';
 if (isMobileDevice && cpuCores <= 4) performanceTier = 'low';
@@ -33,7 +32,7 @@ const fullPixelRatio = performanceTier === 'high'
   ? Math.min(window.devicePixelRatio, 2)
   : performanceTier === 'medium'
     ? Math.min(window.devicePixelRatio, 1.5)
-    : 1;
+    : Math.min(window.devicePixelRatio, 1.5); // relevé de 1 à 1.5 : meilleure fidélité visuelle sur mobile bas de gamme, coût encore raisonnable
 const journeyPixelRatio = Math.min(fullPixelRatio, 1); // toujours réduit pendant le zoom, quel que soit le palier
 renderer.setPixelRatio(fullPixelRatio);
 
@@ -2313,16 +2312,24 @@ const journeySpacerEl = document.getElementById('journey-spacer');
 // Reliées par une vraie courbe (au lieu de 2 lignes droites bout à bout), pour
 // que la caméra tourne en douceur au niveau du bar plutôt que de changer
 // brusquement de direction.
+const journeyStartPos = new THREE.Vector3(0, 5, 22);
+const journeyStartTarget = new THREE.Vector3(0, 1.5, 1.9);
+
 const journeyPositionCurve = new THREE.CatmullRomCurve3([
-  new THREE.Vector3(0, 5, 22),
+  journeyStartPos,
   new THREE.Vector3(0, 2.2, 4),
   new THREE.Vector3(0, 2.0, 10),
 ]);
 const journeyTargetCurve = new THREE.CatmullRomCurve3([
-  new THREE.Vector3(0, 1.5, 1.9),
+  journeyStartTarget,
   new THREE.Vector3(0, 1.1, -1.2),
   new THREE.Vector3(0, 1.7, 6.5),
 ]);
+
+// Direction fixe (départ -> cible d'origine), utilisée pour reculer/avancer
+// la caméra de départ sans changer son angle de vue
+const journeyStartDir = journeyStartPos.clone().sub(journeyStartTarget).normalize();
+const journeyStartBaseDistance = journeyStartPos.distanceTo(journeyStartTarget); // ≈ 20.40, la distance actuelle desktop
 
 // Le canvas 3D ne doit plus jamais intercepter la souris/le doigt : réglé
 // une seule fois au chargement, pas besoin d'y revenir à chaque frame.
@@ -2355,19 +2362,48 @@ function updateScrollJourney() {
    9. ADAPTATION À LA TAILLE DE LA FENÊTRE
    ========================================================= */
 
-window.addEventListener('resize', () => {
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  needsRender = true; // force un rendu à jour après un redimensionnement
-});
+// Largeur réelle du bâtiment (façade + connecteurs), avec une petite marge —
+// c'est ce qui doit tenir à l'horizontale quel que soit le format d'écran
+const BUILDING_HALF_WIDTH = 8;
+const BASE_FOV_DEG = 50;   // FOV desktop d'origine — jamais dépassé vers le bas
+const MAX_FOV_DEG = 68;    // plafond, pour ne jamais déformer la scène
 
+function updateResponsiveScene() {
+  const aspect = window.innerWidth / window.innerHeight;
+  camera.aspect = aspect;
+
+  // FOV élargi seulement sur les formats étroits (aspect < 1.3), plafonné à MAX_FOV_DEG.
+  // Sur desktop/laptop/tablette paysage (aspect >= 1.3), le FOV reste 50° pile.
+  let fovDeg = BASE_FOV_DEG;
+  if (aspect < 1.3) {
+    const t = Math.min(1, (1.3 - aspect) / (1.3 - 0.45));
+    fovDeg = BASE_FOV_DEG + (MAX_FOV_DEG - BASE_FOV_DEG) * t;
+  }
+  camera.fov = fovDeg;
+  camera.updateProjectionMatrix();
+
+  // Distance recalculée pour que la largeur du bâtiment tienne dans le FOV
+  // horizontal réel de cet écran — jamais moins que la distance desktop d'origine
+  const fovRad = THREE.MathUtils.degToRad(fovDeg);
+  const hFov = 2 * Math.atan(Math.tan(fovRad / 2) * aspect);
+  const requiredDistance = BUILDING_HALF_WIDTH / Math.tan(hFov / 2);
+  const distance = Math.max(journeyStartBaseDistance, requiredDistance * 1.08);
+
+  journeyStartPos.copy(journeyStartTarget).addScaledVector(journeyStartDir, distance);
+
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  needsRender = true;
+}
 /* =========================================================
    10. BOUCLE D'ANIMATION
    ========================================================= */
 
 let needsRender = true;
 let wasInJourney = null; // pour ne changer la résolution qu'au moment où l'état bascule, pas à chaque frame
+
+window.addEventListener('resize', updateResponsiveScene);
+window.addEventListener('orientationchange', updateResponsiveScene);
+updateResponsiveScene(); // appel initial, au chargement — après la déclaration de needsRender, dont cette fonction a besoin
 
 function animate() {
   requestAnimationFrame(animate);
