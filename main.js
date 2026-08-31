@@ -2488,8 +2488,8 @@ function updateResponsiveScene() {
   // montre aussi beaucoup plus de hauteur — dont une grande partie de sol
   // vide, puisque la caméra reste en plongée. On aplatit donc l'angle :
   // cible remontée vers le centre du bâtiment + caméra rapprochée en hauteur.
-  journeyStartTarget.y = 1.5 + narrowT * 0.9;
-  journeyStartPos.y = 5 - narrowT * 1.8;
+    journeyStartTarget.y = 1.5 + narrowT * 1.6; // remonte davantage la cible : coupe le vide du bas
+  journeyStartPos.y = 5 - narrowT * 1.0;      // caméra qui descend moins : angle plus horizontal, moins de sol visible
 
   renderer.setSize(window.innerWidth, window.innerHeight);
   needsRender = true;
