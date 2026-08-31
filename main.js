@@ -2421,7 +2421,7 @@ const journeyTargetCurve = new THREE.CatmullRomCurve3([
 // Direction fixe (départ -> cible d'origine), utilisée pour reculer/avancer
 // la caméra de départ sans changer son angle de vue
 const journeyStartDir = journeyStartPos.clone().sub(journeyStartTarget).normalize();
-const journeyStartBaseDistance = journeyStartPos.distanceTo(journeyStartTarget); // ≈ 20.40, la distance actuelle desktop
+
 
 // Le canvas 3D ne doit plus jamais intercepter la souris/le doigt : réglé
 // une seule fois au chargement, pas besoin d'y revenir à chaque frame.
@@ -2460,13 +2460,18 @@ const BUILDING_HALF_WIDTH = 8;
 const BASE_FOV_DEG = 50;   // FOV desktop d'origine — jamais dépassé vers le bas
 const MAX_FOV_DEG = 68;    // plafond, pour ne jamais déformer la scène
 
+// Réglages de base (= exactement le rendu desktop d'origine, jamais modifié)
+const BASE_TARGET_Y = 1.5;
+const BASE_TARGET_Z = 1.9;
+const BASE_HEIGHT_ABOVE_TARGET = 3.5; // 5 - 1.5, la caméra d'origine
+const BASE_Z_DISTANCE = 20.1;         // 22 - 1.9, la profondeur d'origine
+
 function updateResponsiveScene() {
   const aspect = window.innerWidth / window.innerHeight;
   camera.aspect = aspect;
 
   // FOV élargi seulement sur les formats étroits (aspect < 1.3), plafonné à MAX_FOV_DEG.
-  // Sur desktop/laptop/tablette paysage (aspect >= 1.3), le FOV reste 50° pile.
-    let fovDeg = BASE_FOV_DEG;
+  let fovDeg = BASE_FOV_DEG;
   let narrowT = 0;
   if (aspect < 1.3) {
     narrowT = Math.min(1, (1.3 - aspect) / (1.3 - 0.45));
@@ -2475,21 +2480,20 @@ function updateResponsiveScene() {
   camera.fov = fovDeg;
   camera.updateProjectionMatrix();
 
-  // Distance recalculée pour que la largeur du bâtiment tienne dans le FOV
-  // horizontal réel de cet écran — jamais moins que la distance desktop d'origine
+  // Profondeur nécessaire pour que la largeur du bâtiment tienne dans le FOV
+  // horizontal réel de cet écran — jamais moins que la profondeur d'origine
   const fovRad = THREE.MathUtils.degToRad(fovDeg);
   const hFov = 2 * Math.atan(Math.tan(fovRad / 2) * aspect);
-    const requiredDistance = BUILDING_HALF_WIDTH / Math.tan(hFov / 2);
-  const distance = Math.max(journeyStartBaseDistance, requiredDistance * 1.08);
+  const requiredZDistance = BUILDING_HALF_WIDTH / Math.tan(hFov / 2);
+  const zDistance = Math.max(BASE_Z_DISTANCE, requiredZDistance * 1.08);
 
-  journeyStartPos.copy(journeyStartTarget).addScaledVector(journeyStartDir, distance);
+  // Sur écran étroit, angle aplati : cible remontée + caméra moins haute
+  // au-dessus d'elle — 3 réglages indépendants, jamais l'un n'écrase l'autre
+  const targetY = BASE_TARGET_Y + narrowT * 2.0;
+  const heightAboveTarget = BASE_HEIGHT_ABOVE_TARGET - narrowT * 1.3;
 
-    // Sur écran étroit/vertical, le FOV élargi (nécessaire pour la largeur)
-  // montre aussi beaucoup plus de hauteur — dont une grande partie de sol
-  // vide, puisque la caméra reste en plongée. On aplatit donc l'angle :
-  // cible remontée vers le centre du bâtiment + caméra rapprochée en hauteur.
-    journeyStartTarget.y = 1.5 + narrowT * 2.4; // remonte davantage la cible : coupe le vide du bas
-  journeyStartPos.y = 5 - narrowT * 1.6;      // caméra qui descend moins : angle plus horizontal, moins de sol visible
+  journeyStartTarget.set(0, targetY, BASE_TARGET_Z);
+  journeyStartPos.set(0, targetY + heightAboveTarget, BASE_TARGET_Z + zDistance);
 
   renderer.setSize(window.innerWidth, window.innerHeight);
   needsRender = true;
