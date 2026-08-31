@@ -236,52 +236,6 @@ function showMenuCategory(categoryId) {
 
 renderMenu();
 
-// ---------- GALERIE ----------
-
-const galleryImages = [
-  { src: '', alt: 'La sala del café', size: 'large' },
-  { src: '', alt: 'La barra' },
-  { src: '', alt: 'Una tapa' },
-  { src: '', alt: 'Zona salón' },
-  { src: '', alt: 'Un café' },
-  { src: '', alt: 'La entrada' },
-];
-
-function renderGallery() {
-  const grid = document.getElementById('gallery-grid');
-
-  galleryImages.forEach((photo, index) => {
-    const item = document.createElement('div');
-    item.className = 'gallery-item' + (photo.size === 'large' ? ' large' : '');
-    item.innerHTML = photo.src
-      ? `<img src="${photo.src}" alt="${photo.alt}">`
-      : `<div class="gallery-placeholder"><span class="icon">🖼️</span><span>${photo.alt}</span></div>`;
-    item.addEventListener('click', () => openLightbox(index));
-    grid.appendChild(item);
-  });
-}
-
-function openLightbox(index) {
-  const photo = galleryImages[index];
-  const content = document.getElementById('lightbox-content');
-  content.innerHTML = photo.src
-    ? `<img src="${photo.src}" alt="${photo.alt}">`
-    : `<div class="gallery-placeholder"><span class="icon">🖼️</span><span>${photo.alt}</span></div>`;
-  document.getElementById('lightbox').classList.add('open');
-}
-
-function closeLightbox() {
-  document.getElementById('lightbox').classList.remove('open');
-}
-
-document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
-document.getElementById('lightbox').addEventListener('click', (e) => {
-  if (e.target.id === 'lightbox') closeLightbox();
-});
-
-renderGallery();
-
-
 // ---------- AVIS CLIENTS ----------
 
 const testimonials = [

@@ -281,7 +281,7 @@ floor.position.set(0, 0, 1.8); // recentre le sol réduit sur la vraie zone de l
 floor.receiveShadow = true;
 scene.add(floor);
 
-const wallTexture = createWallTexture(0xf2e8d8);
+const wallTexture = createWallTexture(0x5a321f);
 wallTexture.repeat.set(4, 1.2);
 const wall = new THREE.Mesh(
   new THREE.PlaneGeometry(12, 3.4),
@@ -316,9 +316,9 @@ function createLatticeCeiling(x, z, size, cellSize, rotationDeg = 45, yOffset = 
   scene.add(lattice);
 
   // Panneau clair juste au-dessus, pouºr fermer visuellement le plafond
-  const backdrop = new THREE.Mesh(
+    const backdrop = new THREE.Mesh(
     new THREE.PlaneGeometry(size * 1.6, size * 1.6),
-    new THREE.MeshStandardMaterial({ color: 0xf2e8d8, roughness: 0.9 })
+    new THREE.MeshStandardMaterial({ color: 0x5a321f, roughness: 0.9 })
   );
   backdrop.rotation.x = Math.PI / 2;
   backdrop.position.set(x, 3.15 + yOffset, z);
@@ -655,10 +655,10 @@ function createBar(x, z) {
 
   for (let i = -4; i <= 4; i++) {
 
-    const panel = new THREE.Mesh(
+        const panel = new THREE.Mesh(
       new THREE.BoxGeometry(0.8, 0.55, 0.035),
       new THREE.MeshStandardMaterial({
-        color: 0xd8cebd,
+        color: 0x5a321f,
         roughness: 0.8
       })
     );
@@ -754,7 +754,7 @@ createMetalMeshPanel(1.5);
 // -------------------------------------------------------
 
 const separatorMaterial = new THREE.MeshStandardMaterial({
-  color: 0xe8dfcf,
+  color: 0x5a321f,
   roughness: 0.75,
   metalness: 0.05
 });
@@ -977,8 +977,8 @@ createMeshSeparator(0.75);
   // 8. PETIT CORNER DU BAR — laisse un passage vers la 2e salle
   // -------------------------------------------------------
 
-  const cornerMaterial = new THREE.MeshStandardMaterial({
-    color: 0xe8dfcf,
+    const cornerMaterial = new THREE.MeshStandardMaterial({
+    color: 0x5a321f,
     roughness: 0.75,
     metalness: 0.05
   });
@@ -1075,8 +1075,8 @@ function createBarPillar(bar, x, z, rotationY = 0) {
   // MATÉRIAU DU PILIER
   // -------------------------------------------------------
 
-  const pillarMaterial = new THREE.MeshStandardMaterial({
-    color: 0xe8dfcf,
+    const pillarMaterial = new THREE.MeshStandardMaterial({
+    color: 0x5a321f,
     roughness: 0.75,
     metalness: 0.05
   });
@@ -1100,10 +1100,10 @@ function createBarPillar(bar, x, z, rotationY = 0) {
   // PETITE MOULURE EN HAUT
   // -------------------------------------------------------
 
-  const top = new THREE.Mesh(
+    const top = new THREE.Mesh(
     new THREE.BoxGeometry(0.46, 0.10, 0.46),
     new THREE.MeshStandardMaterial({
-      color: 0xf2e8d8,
+      color: 0x5a321f,
       roughness: 0.8
     })
   );
@@ -1112,15 +1112,14 @@ function createBarPillar(bar, x, z, rotationY = 0) {
   top.castShadow = true;
 
   pillar.add(top);
-
   // -------------------------------------------------------
   // PETITE BASE DU PILIER
   // -------------------------------------------------------
 
-  const base = new THREE.Mesh(
+    const base = new THREE.Mesh(
     new THREE.BoxGeometry(0.46, 0.10, 0.46),
     new THREE.MeshStandardMaterial({
-      color: 0xd8cebd,
+      color: 0x5a321f,
       roughness: 0.8
     })
   );
@@ -1188,7 +1187,7 @@ function createBarFootrest(bar) {
 
 function createBarCorner(bar, x, z, rotationYDeg) {
   const cornerMaterial = new THREE.MeshStandardMaterial({
-    color: 0xe8dfcf,
+    color: 0x5a321f,
     roughness: 0.75,
     metalness: 0.05
   });
@@ -1674,7 +1673,7 @@ function createCafeFacade() {
     const stairWidth = width + 0.3;
     const stepDepth = 0.38;
     const stepHeight = 0.12;
-    const stoneMat = new THREE.MeshStandardMaterial({ color: 0x9c9488, roughness: 0.85 });
+        const stoneMat = new THREE.MeshStandardMaterial({ color: 0x3a3530, roughness: 0.85 });
 
     for (let i = 0; i < 3; i++) {
       const height = stepHeight * (3 - i);
