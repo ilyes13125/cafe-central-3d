@@ -110,6 +110,7 @@ canvas {
 #hero {
   position: relative;
   height: 100vh;
+  height: 100dvh; /* hauteur réellement visible sur mobile, ignore la barre d'adresse qui va et vient */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -126,11 +127,23 @@ canvas {
   animation: fadeInUp 1.1s ease both;
 }
 
+.hero-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: clamp(170px, 42vw, 235px);
+  height: clamp(170px, 42vw, 235px);
+  border-radius: 50%;
+  border: 2px solid #ffcc33;
+  padding: 0.8rem;
+}
+
 .hero-cup {
-  width: 46px;
-  height: 46px;
+  width: 40px;
+  height: 40px;
   color: #b8843f;
-  margin-bottom: 0.7rem;
+  margin-bottom: 0.5rem;
 }
 
 .hero-identity {
@@ -160,9 +173,9 @@ canvas {
 
 .hero-identity-line {
   font-family: Georgia, 'Times New Roman', serif;
-  font-size: clamp(1.7rem, 4.5vw, 2.7rem);
+  font-size: clamp(1.4rem, 3.6vw, 2.1rem);
   color: #f2e8d8;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.05em;
   text-shadow: 0 4px 20px rgba(0,0,0,0.6);
   line-height: 1.05;
 }
@@ -196,7 +209,7 @@ canvas {
 }
 
 @media (max-width: 700px) {
-  #hero { padding: 4.5rem 1.2rem 4.5rem; }
+  #hero { padding: 4.5rem 1.2rem 6rem; }
 }
 
 .btn {
