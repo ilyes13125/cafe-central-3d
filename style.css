@@ -134,8 +134,16 @@ canvas {
 .hero-subtitle {
   font-size: clamp(1rem, 2vw, 1.4rem);
   letter-spacing: 0.35em;
-  color: #b8843f;
+  color: #d8a860;
   margin-top: 0.5rem;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.7);
+}
+
+@media (max-width: 700px) {
+  #hero {
+    align-items: flex-start;
+    padding-top: 10vh;
+  }
 }
 .hero-tagline {
   margin-top: 1.5rem;

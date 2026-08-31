@@ -1727,6 +1727,74 @@ function createCafeFacade() {
       createFacadePlanter(xWinL, 0.55, 1.0); // vitrine gauche
   createFacadePlanter(xWinR, 0.55, 1.0); // vitrine droite
 
+   // --- Logo circulaire doré au centre de la vitrine centrale ---
+  function createFacadeLogoCircle(x, y, z, radius, line1, line2) {
+    const goldMat = new THREE.MeshStandardMaterial({ color: 0xb8843f, roughness: 0.3, metalness: 0.7 });
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(radius, radius * 0.025, 10, 48), goldMat);
+    ring.position.set(x, y, z);
+    facade.add(ring);
+
+    // Texte à fond transparent (rien dessiné autour), pour laisser voir le
+    // verre entre les lettres et dans le reste du cercle
+    const canvas = document.createElement('canvas');
+    canvas.width = 400;
+    canvas.height = 400;
+    const ctx = canvas.getContext('2d');
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = '#d8b878';
+    ctx.shadowColor = 'rgba(0,0,0,0.35)';
+    ctx.shadowBlur = 5;
+    ctx.font = 'bold 66px Georgia, "Times New Roman", serif';
+    ctx.fillText(line1, 200, 172);
+    ctx.font = 'bold 48px Georgia, "Times New Roman", serif';
+    ctx.fillText(line2, 200, 240);
+
+    const texture = new THREE.CanvasTexture(canvas);
+    const textPlane = new THREE.Mesh(
+      new THREE.CircleGeometry(radius * 0.9, 48),
+      new THREE.MeshBasicMaterial({ map: texture, transparent: true })
+    );
+    textPlane.position.set(x, y, z + 0.008);
+    facade.add(textPlane);
+  }
+
+    // --- Petit texte "CAFÉ" doré, encadré d'un cercle, appliqué sur une vitrine latérale ---
+  function createFacadeGlassText(x, y, z, text, fontSize, width) {
+    const goldMat = new THREE.MeshStandardMaterial({ color: 0xb8843f, roughness: 0.3, metalness: 0.7 });
+    const ringRadius = width * 0.4;
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(ringRadius, ringRadius * 0.03, 10, 40), goldMat);
+    ring.position.set(x, y, z);
+    facade.add(ring);
+
+    const canvas = document.createElement('canvas');
+    canvas.width = 320;
+    canvas.height = 110;
+    const ctx = canvas.getContext('2d');
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = '#d8b878';
+    ctx.shadowColor = 'rgba(0,0,0,0.3)';
+    ctx.shadowBlur = 4;
+    ctx.font = `bold ${fontSize}px Georgia, "Times New Roman", serif`;
+    ctx.fillText(text, canvas.width / 2, canvas.height / 2);
+
+    const texture = new THREE.CanvasTexture(canvas);
+    const plane = new THREE.Mesh(
+      new THREE.PlaneGeometry(width, width * (canvas.height / canvas.width)),
+      new THREE.MeshBasicMaterial({ map: texture, transparent: true })
+    );
+    plane.position.set(x, y, z + 0.005);
+    facade.add(plane);
+  }
+
+  // Centre vertical exact du vitrage (identique pour les 3 fenêtres)
+  const glassCenterY = baseHeight + (facadeHeight - baseHeight - 0.8) / 2;
+
+  createFacadeLogoCircle(xWinC, glassCenterY, 0.03, 0.65, 'CAFÉ', 'CENTRAL');
+  createFacadeGlassText(xWinL, glassCenterY, 0.03, 'CAFÉ', 44, 1.0);
+  createFacadeGlassText(xWinR, glassCenterY, 0.03, 'CAFÉ', 44, 1.0);
+
   // --- Enseignes lumineuses (plaque sombre + cadre LED jaune + texte rétroéclairé) ---
         function createFacadeSign(x, text, width = 1.9, height = 0.42, zPos = 0.14, lightMult = 1) {
     const signWidth = width;
@@ -2374,10 +2442,11 @@ function updateResponsiveScene() {
 
   // FOV élargi seulement sur les formats étroits (aspect < 1.3), plafonné à MAX_FOV_DEG.
   // Sur desktop/laptop/tablette paysage (aspect >= 1.3), le FOV reste 50° pile.
-  let fovDeg = BASE_FOV_DEG;
+    let fovDeg = BASE_FOV_DEG;
+  let narrowT = 0;
   if (aspect < 1.3) {
-    const t = Math.min(1, (1.3 - aspect) / (1.3 - 0.45));
-    fovDeg = BASE_FOV_DEG + (MAX_FOV_DEG - BASE_FOV_DEG) * t;
+    narrowT = Math.min(1, (1.3 - aspect) / (1.3 - 0.45));
+    fovDeg = BASE_FOV_DEG + (MAX_FOV_DEG - BASE_FOV_DEG) * narrowT;
   }
   camera.fov = fovDeg;
   camera.updateProjectionMatrix();
@@ -2386,10 +2455,17 @@ function updateResponsiveScene() {
   // horizontal réel de cet écran — jamais moins que la distance desktop d'origine
   const fovRad = THREE.MathUtils.degToRad(fovDeg);
   const hFov = 2 * Math.atan(Math.tan(fovRad / 2) * aspect);
-  const requiredDistance = BUILDING_HALF_WIDTH / Math.tan(hFov / 2);
+    const requiredDistance = BUILDING_HALF_WIDTH / Math.tan(hFov / 2);
   const distance = Math.max(journeyStartBaseDistance, requiredDistance * 1.08);
 
   journeyStartPos.copy(journeyStartTarget).addScaledVector(journeyStartDir, distance);
+
+  // Sur écran étroit/vertical, remonte la cible et la caméra pour que le
+  // bâtiment remplisse davantage la hauteur disponible, au lieu de laisser
+  // un grand vide au-dessus
+  const verticalLift = narrowT * 1.1;
+  journeyStartTarget.y = 1.5 + verticalLift;
+  journeyStartPos.y += verticalLift;
 
   renderer.setSize(window.innerWidth, window.innerHeight);
   needsRender = true;
