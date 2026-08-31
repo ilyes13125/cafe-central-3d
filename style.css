@@ -111,53 +111,92 @@ canvas {
   position: relative;
   height: 100vh;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   text-align: center;
   z-index: 1;
+  padding: 3rem 1.5rem 4rem;
 }
 
-.hero-content {
-  max-width: 700px;
-  padding: 2rem;
+.hero-top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   animation: fadeInUp 1.1s ease both;
 }
 
-.hero-title {
-  font-family: Georgia, 'Times New Roman', serif;
-  font-size: clamp(2.8rem, 6vw, 5rem);
-  color: #f2e8d8;
-  letter-spacing: 0.05em;
-  text-shadow: 0 4px 20px rgba(0,0,0,0.6);
-  margin: 0;
+.hero-cup {
+  width: 46px;
+  height: 46px;
+  color: #b8843f;
+  margin-bottom: 0.7rem;
 }
-.hero-subtitle {
-  font-size: clamp(1rem, 2vw, 1.4rem);
-  letter-spacing: 0.35em;
-  color: #d8a860;
-  margin-top: 0.5rem;
-  text-shadow: 0 2px 10px rgba(0,0,0,0.7);
+
+.hero-identity {
+  position: relative;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.02em;
+}
+
+/* Un seul grand C décoratif en fond, partagé par CAFÉ et CENTRAL — pas un
+   par mot */
+.hero-big-c {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 7.5rem;
+  color: rgba(184, 132, 63, 0.2);
+  line-height: 1;
+  z-index: -1;
+  pointer-events: none;
+  user-select: none;
+}
+
+.hero-identity-line {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(1.7rem, 4.5vw, 2.7rem);
+  color: #f2e8d8;
+  letter-spacing: 0.06em;
+  text-shadow: 0 4px 20px rgba(0,0,0,0.6);
+  line-height: 1.05;
+}
+
+.hero-slogan {
+  font-style: italic;
+  font-size: clamp(0.85rem, 2vw, 1.1rem);
+  color: #ffcc33;
+  letter-spacing: 0.03em;
+  margin: 1rem 0 0;
+  padding-bottom: 0.7rem;
+  position: relative;
+}
+.hero-slogan::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 44px;
+  height: 1px;
+  background: #ffcc33;
+}
+
+.hero-bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  align-items: center;
+  animation: fadeInUp 1.1s ease 0.2s both;
 }
 
 @media (max-width: 700px) {
-  #hero {
-    align-items: flex-start;
-    padding-top: 10vh;
-  }
-}
-.hero-tagline {
-  margin-top: 1.5rem;
-  font-style: italic;
-  color: #e8dfcf;
-  font-size: 1.15rem;
-}
-
-.hero-buttons {
-  margin-top: 2.5rem;
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  flex-wrap: wrap;
+  #hero { padding: 2rem 1.2rem 3rem; }
 }
 
 .btn {
