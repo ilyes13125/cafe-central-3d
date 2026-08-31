@@ -285,10 +285,10 @@ scene.add(floor);
 const wallTexture = createWallTexture(0x5a321f);
 wallTexture.repeat.set(4, 1.2);
 const wall = new THREE.Mesh(
-  new THREE.PlaneGeometry(12, 3.4),
+  new THREE.PlaneGeometry(12, 4.2),
   new THREE.MeshStandardMaterial({ map: wallTexture, roughness: 0.9 })
 );
-wall.position.set(0, 1.7, -3);
+wall.position.set(0, 2.1, -3);
 wall.receiveShadow = true;
 scene.add(wall);
 /* =========================================================
@@ -313,7 +313,7 @@ function createLatticeCeiling(x, z, size, cellSize, rotationDeg = 45, yOffset = 
   }
 
     lattice.rotation.y = THREE.MathUtils.degToRad(rotationDeg);
-  lattice.position.set(x, 3.0 + yOffset, z);
+   lattice.position.set(x, 3.8 + yOffset, z);
   scene.add(lattice);
 
   // Panneau clair juste au-dessus, pouºr fermer visuellement le plafond
@@ -322,7 +322,7 @@ function createLatticeCeiling(x, z, size, cellSize, rotationDeg = 45, yOffset = 
     new THREE.MeshStandardMaterial({ color: 0x5a321f, roughness: 0.9 })
   );
   backdrop.rotation.x = Math.PI / 2;
-  backdrop.position.set(x, 3.15 + yOffset, z);
+    backdrop.position.set(x, 3.95 + yOffset, z);
   scene.add(backdrop);
 }
 /* =========================================================
@@ -1227,12 +1227,12 @@ function createDividerWall(x, zStart, zEnd, thickness, rotationYDeg) {
   dividerTexture.repeat.set(Math.max(1, Math.round(length / 3)), 1.2);
   const wallMaterial = new THREE.MeshStandardMaterial({ map: dividerTexture, roughness: 0.9 });
 
-  const panel = new THREE.Mesh(
-    new THREE.BoxGeometry(thickness, 3.4, length),
+    const panel = new THREE.Mesh(
+    new THREE.BoxGeometry(thickness, 4.2, length),
     wallMaterial
   );
 
-  panel.position.set(x, 1.7, centerZ);
+  panel.position.set(x, 2.1, centerZ);
   panel.rotation.y = THREE.MathUtils.degToRad(rotationYDeg);
   panel.castShadow = true;
   panel.receiveShadow = true;
@@ -1462,7 +1462,7 @@ function createCafeFacade() {
   const facadeZ = 6.8;            // position Z (à l'avant de la salle, devant les tables)
   const facadeRotationDeg = 0;    // rotation de l'ensemble de la façade
   const facadeWidth = 14;         // largeur totale
-  const facadeHeight = 3.4;       // hauteur totale (= hauteur des murs existants)
+    const facadeHeight = 4.2;       // hauteur totale (= hauteur des murs existants)
   const centerWindowWidth = 5.2;  // largeur de la grande vitrine centrale
   const sideWindowWidth = 1.3;    // largeur de chaque vitrine latérale
   const doorWidth = 2.6;          // largeur de chaque porte
@@ -1896,7 +1896,7 @@ function createCafeFacade() {
     textPlane.position.set(0, 0, 0.07);
     sign.add(textPlane);
 
-    sign.position.set(x, 3.0, zPos);
+     sign.position.set(x, facadeHeight - 0.4, zPos);
     facade.add(sign);
   }
 
@@ -2186,7 +2186,7 @@ function createCeilingFanLight(x, z) {
   fanLight.castShadow = true;
   fan.add(fanLight);
 
-  fan.position.set(x, 2.95, z);
+    fan.position.set(x, 3.75, z);
   scene.add(fan);
 }
 
@@ -2331,20 +2331,20 @@ createDividerWall(-7.8, -3.3, 6.1, 0.35, 0);
 
 // Connecteur droit : referme l'écart entre le mur incliné (bout réel ≈7.72, 6.03) et le poteau reculé de la façade (6.9, 6.0)
 const rightConnector = new THREE.Mesh(
-  new THREE.BoxGeometry(0.85, 3.4, 0.2),
+  new THREE.BoxGeometry(0.85, 4.2, 0.2),
   new THREE.MeshStandardMaterial({ map: createWallTexture(0x61201c), roughness: 0.9 })
 );
-rightConnector.position.set(7.32, 1.7, 6.0);
+rightConnector.position.set(7.32, 2.1, 6.0);
 rightConnector.castShadow = true;
 rightConnector.receiveShadow = true;
 scene.add(rightConnector);
 
 // Connecteur gauche : referme l'écart entre le mur gauche (-7.8, 6.1) et son poteau reculé (-7, 6.0)
 const leftConnector = new THREE.Mesh(
-  new THREE.BoxGeometry(0.85, 3.4, 0.35),
+  new THREE.BoxGeometry(0.85, 4.2, 0.35),
   new THREE.MeshStandardMaterial({ map: createWallTexture(0x61201c), roughness: 0.9 })
 );
-leftConnector.position.set(-7.4, 1.7, 6.05);
+leftConnector.position.set(-7.4, 2.1, 6.05);
 leftConnector.castShadow = true;
 leftConnector.receiveShadow = true;
 scene.add(leftConnector);
@@ -2369,7 +2369,7 @@ const roof = new THREE.Mesh(
   new THREE.BoxGeometry(15.4, 0.15, 10.2),
   new THREE.MeshStandardMaterial({ color: 0x000000, roughness: 0.9, metalness: 0.02 })
 );
-roof.position.set(-0.24, 3.48, 1.9); // centré sur l'empreinte réelle du bâtiment (murs + façade)
+roof.position.set(-0.24, 4.28, 1.9); // centré sur l'empreinte réelle du bâtiment (murs + façade)
 roof.castShadow = true;
 roof.receiveShadow = true;
 scene.add(roof);
