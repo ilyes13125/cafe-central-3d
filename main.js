@@ -1731,62 +1731,134 @@ function createCafeFacade() {
   // Même hiérarchie que le logo principal du site : titre "CAFÉ CENTRAL"
   // (empilé sur 2 lignes pour rester lisible dans le cercle) + sous-titre
   // jaune "TAPAS & CAFELITOS" en dessous, plus petit.
-    function createFacadeLogoCircle(x, y, z, radius, line1, line2, subtitle) {
-    const goldMat = new THREE.MeshStandardMaterial({ color: 0xb8843f, roughness: 0.3, metalness: 0.7 });
-    const ring = new THREE.Mesh(new THREE.TorusGeometry(radius, radius * 0.025, 10, 48), goldMat);
-    ring.position.set(x, y, z);
-    facade.add(ring);
-
+     function createFacadeEmblem(x, y, z, size) {
     const canvas = document.createElement('canvas');
-    canvas.width = 400;
-    canvas.height = 400;
+    canvas.width = 500;
+    canvas.height = 500;
     const ctx = canvas.getContext('2d');
+    const cx = 250, cy = 250;
+
+    // --- Anneau extérieur + repères, avec halo doré ---
+        ctx.shadowColor = '#ffcc33';
+    ctx.shadowBlur = 34;
+    ctx.strokeStyle = '#ffcc33';
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 238, 0, Math.PI * 2);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(470, 250); ctx.lineTo(482, 250);
+    ctx.moveTo(453, 334); ctx.lineTo(465, 339);
+    ctx.moveTo(406, 406); ctx.lineTo(414, 414);
+    ctx.moveTo(334, 453); ctx.lineTo(339, 465);
+    ctx.moveTo(250, 470); ctx.lineTo(250, 482);
+    ctx.moveTo(166, 453); ctx.lineTo(161, 465);
+    ctx.moveTo(94, 406); ctx.lineTo(86, 414);
+    ctx.moveTo(47, 334); ctx.lineTo(35, 339);
+    ctx.moveTo(30, 250); ctx.lineTo(18, 250);
+    ctx.moveTo(47, 166); ctx.lineTo(35, 161);
+    ctx.moveTo(94, 94); ctx.lineTo(86, 86);
+    ctx.moveTo(166, 47); ctx.lineTo(161, 35);
+    ctx.moveTo(250, 30); ctx.lineTo(250, 18);
+    ctx.moveTo(334, 47); ctx.lineTo(339, 35);
+    ctx.moveTo(406, 94); ctx.lineTo(414, 86);
+    ctx.moveTo(453, 166); ctx.lineTo(465, 161);
+    ctx.stroke();
+
+    // --- Anneau intérieur, halo plus léger ---
+        ctx.shadowBlur = 16;
+    ctx.strokeStyle = '#b8843f';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 212, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // --- Tasse de café, pas de halo (reste net) ---
+    ctx.shadowBlur = 0;
+    ctx.save();
+    ctx.translate(220, 75);
+    ctx.scale(1.25, 1.25);
+    ctx.strokeStyle = '#b8843f';
+    ctx.lineWidth = 3;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(10, 20);
+    ctx.lineTo(32, 20);
+    ctx.lineTo(32, 30);
+    ctx.arc(21, 30, 11, 0, Math.PI, false);
+    ctx.lineTo(10, 20);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(35.5, 26, 4, -Math.PI / 2, Math.PI / 2, false);
+    ctx.stroke();
+    [[17, 8], [24, 6], [31, 8]].forEach(([sx, sy], i) => {
+      ctx.globalAlpha = i === 1 ? 0.85 : 0.7;
+      ctx.beginPath();
+      ctx.moveTo(sx, sy);
+      ctx.bezierCurveTo(sx - 2, sy + 2, sx + 2, sy + 2, sx, sy + 8);
+      ctx.stroke();
+    });
+    ctx.globalAlpha = 1;
+    ctx.restore();
+
+    // --- Diviseur + point, halo doré marqué ---
+        ctx.shadowColor = '#ffcc33';
+    ctx.shadowBlur = 22;
+    ctx.strokeStyle = '#b8843f';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(180, 225); ctx.lineTo(220, 225);
+    ctx.moveTo(280, 225); ctx.lineTo(320, 225);
+    ctx.stroke();
+    ctx.fillStyle = '#ffcc33';
+    ctx.beginPath();
+    ctx.arc(250, 225, 6, 0, Math.PI * 2);
+    ctx.fill();
+
+    // --- Texte, halo chaud doux (façon rétroéclairé) ---
+        ctx.shadowColor = '#fff3c4';
+    ctx.shadowBlur = 26;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.shadowColor = 'rgba(0,0,0,0.4)';
-    ctx.shadowBlur = 5;
+    ctx.fillStyle = '#f2e8d8';
+    ctx.font = 'bold 48px Georgia, "Times New Roman", serif';
+    ctx.fillText('CAFÉ', 250, 275);
+    ctx.font = 'bold 38px Georgia, "Times New Roman", serif';
+    ctx.fillText('CENTRAL', 250, 325);
 
-    // Réduit la police de chaque ligne jusqu'à ce qu'elle tienne réellement
-    // dans le cercle à cette hauteur (mesuré, pas deviné) — le cercle est
-    // plus étroit en haut/en bas qu'au milieu.
-    function fitText(text, centerY, maxSize) {
-      const offset = Math.abs(centerY - 200);
-      const safeRadius = 175;
-      const maxWidth = 2 * Math.sqrt(Math.max(0, safeRadius * safeRadius - offset * offset)) * 0.9;
-      let size = maxSize;
-      do {
-        ctx.font = `bold ${size}px Georgia, "Times New Roman", serif`;
-        size -= 2;
-      } while (ctx.measureText(text).width > maxWidth && size > 10);
-      return size + 2;
+    // --- Lauriers, pas de halo (restent nets, façon métal mat) ---
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = '#b8843f';
+    function drawLeaf(lx, ly, rotDeg) {
+      ctx.save();
+      ctx.translate(lx, ly);
+      ctx.rotate(THREE.MathUtils.degToRad(rotDeg));
+      ctx.beginPath();
+      ctx.ellipse(0, 0, 17, 6.5, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
     }
-
-    // "CAFÉ" et "CENTRAL" — blanc
-    ctx.fillStyle = '#f5f0e6';
-    const size1 = fitText(line1, 140, 60);
-    ctx.font = `bold ${size1}px Georgia, "Times New Roman", serif`;
-    ctx.fillText(line1, 200, 140);
-
-    const size2 = fitText(line2, 195, 50);
-    ctx.font = `bold ${size2}px Georgia, "Times New Roman", serif`;
-    ctx.fillText(line2, 200, 195);
-
-    // Sous-titre — jaune, plus petit
-    ctx.fillStyle = '#ffcc33';
-    const size3 = fitText(subtitle, 250, 26);
-    ctx.font = `${size3}px Georgia, "Times New Roman", serif`;
-    ctx.fillText(subtitle, 200, 250);
+    drawLeaf(217, 437, 190); drawLeaf(177, 431, 202); drawLeaf(139, 415, 214);
+    drawLeaf(106, 389, 226); drawLeaf(82, 355, 238); drawLeaf(67, 317, 250); drawLeaf(62, 276, 262);
+    drawLeaf(283, 437, -10); drawLeaf(323, 431, -22); drawLeaf(361, 415, -34);
+    drawLeaf(394, 389, -46); drawLeaf(418, 355, -58); drawLeaf(433, 317, -70); drawLeaf(438, 276, -82);
 
     const texture = new THREE.CanvasTexture(canvas);
-    const textPlane = new THREE.Mesh(
-      new THREE.CircleGeometry(radius * 0.9, 48),
+    const plane = new THREE.Mesh(
+      new THREE.CircleGeometry(size, 48),
       new THREE.MeshBasicMaterial({ map: texture, transparent: true })
     );
-    textPlane.position.set(x, y, z + 0.008);
-    facade.add(textPlane);
+    plane.position.set(x, y, z);
+    facade.add(plane);
+
+        // --- Vraie lumière chaude, illumine la vitrine autour du logo ---
+        const emblemLight = new THREE.PointLight(0xffcc33, 5 * facadeLightScale, 2.5, 2);
+    emblemLight.position.set(x, y, z + 0.2);
+    facade.add(emblemLight);
   }
 
-    // --- Petit texte "CAFÉ" doré, encadré d'un cercle, appliqué sur une vitrine latérale ---
+  // --- Petit texte "CAFÉ" doré, encadré d'un cercle, appliqué sur une vitrine latérale ---
   function createFacadeGlassText(x, y, z, text, fontSize, width) {
     const goldMat = new THREE.MeshStandardMaterial({ color: 0xb8843f, roughness: 0.3, metalness: 0.7 });
     const ringRadius = width * 0.4;
@@ -1818,7 +1890,7 @@ function createCafeFacade() {
   // Centre vertical exact du vitrage (identique pour les 3 fenêtres)
   const glassCenterY = baseHeight + (facadeHeight - baseHeight - 0.8) / 2;
 
-        createFacadeLogoCircle(xWinC, glassCenterY, 0.03, 0.45, 'CAFÉ', 'CENTRAL', 'TAPAS & CAFELITOS');
+               createFacadeEmblem(xWinC, glassCenterY, 0.03, 0.48);
   createFacadeGlassText(xWinL, glassCenterY, 0.03, 'CAFÉ', 44, 1.0);
   createFacadeGlassText(xWinR, glassCenterY, 0.03, 'CAFÉ', 44, 1.0);
 
@@ -2415,7 +2487,7 @@ const journeyPositionCurve = new THREE.CatmullRomCurve3([
 const journeyTargetCurve = new THREE.CatmullRomCurve3([
   journeyStartTarget,
   new THREE.Vector3(0, 1.1, -1.2),
-  new THREE.Vector3(0, 1.775, 6.8), // pile la hauteur/profondeur du logo circulaire de la façade
+  new THREE.Vector3(0, 2.175, 6.8), // pile la hauteur/profondeur du logo circulaire de la façade (recalé après l'agrandissement du bâtiment)
 ]);
 
 // Direction fixe (départ -> cible d'origine), utilisée pour reculer/avancer
