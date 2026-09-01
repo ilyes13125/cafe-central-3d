@@ -2600,3 +2600,28 @@ function animate() {
 }
 
 animate();
+
+// ---------------------------------------------------------
+// ANIMATION D'ENTRÉE — le bâtiment entier monte depuis le sol
+// au chargement de la page
+// ---------------------------------------------------------
+function easeOutCubic(t) {
+  return 1 - Math.pow(1 - t, 3);
+}
+
+const sceneRiseStartY = -9;   // à quel point le bâtiment démarre enfoncé
+const sceneRiseDuration = 1800; // durée en millisecondes
+scene.position.y = sceneRiseStartY;
+
+const riseStartTime = performance.now();
+function animateSceneRise(now) {
+  const t = Math.min((now - riseStartTime) / sceneRiseDuration, 1);
+  scene.position.y = sceneRiseStartY * (1 - easeOutCubic(t));
+  needsRender = true;
+  if (t < 1) {
+    requestAnimationFrame(animateSceneRise);
+  } else {
+    scene.position.y = 0; // valeur finale exacte
+  }
+}
+requestAnimationFrame(animateSceneRise);

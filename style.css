@@ -348,49 +348,7 @@ canvas {
 
 /* ---------- LE CAFÉ ---------- */
 
-.cafe-section {
-  position: relative;
-  z-index: 1;
-  padding: 6rem 2rem;
-  background: rgba(21, 16, 12, 0.85);
-  backdrop-filter: blur(8px);
-  border-top: 1px solid rgba(184,132,63,0.3);
-  display: flex;
-  justify-content: center;
-}
 
-.cafe-content {
-  max-width: 720px;
-  text-align: center;
-}
-
-.cafe-text {
-  color: #e8dfcf;
-  font-size: 1.15rem;
-  line-height: 1.7;
-  font-style: italic;
-  margin: 0 auto 2.5rem;
-}
-
-.cafe-features {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 0.7rem;
-}
-
-.feature-tag {
-  border: 1px solid rgba(184,132,63,0.5);
-  color: #b8843f;
-  padding: 0.5rem 1.2rem;
-  border-radius: 30px;
-  font-size: 0.85rem;
-  letter-spacing: 0.03em;
-}
-
-@media (max-width: 600px) {
-  .cafe-section { padding: 4rem 1.2rem; }
-}
 
 
 
