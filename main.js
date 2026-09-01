@@ -1472,7 +1472,7 @@ function createCafeFacade() {
 
   const facade = new THREE.Group();
 
-    const baseMat = new THREE.MeshStandardMaterial({ color: 0x61201c, roughness: 0.75 });
+       const baseMat = new THREE.MeshStandardMaterial({ color: 0x421613, roughness: 0.75 });
   const woodMat = createRealisticWoodMaterial(0x5a321f, 3, 1, 0.5);
   const frameMat = new THREE.MeshStandardMaterial({ color: 0x6e1420, roughness: 0.45, metalness: 0.3 });
     const glassMat = new THREE.MeshPhysicalMaterial({
