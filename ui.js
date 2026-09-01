@@ -151,8 +151,8 @@ const menuData = [
       { name: 'Secreto ibérico con ajetes', priceHalf: '9,50 €', priceFull: '16,50 €', icon: '🥩' },
       { name: 'Solomillo salsa de setas', priceHalf: '8,50 €', priceFull: '12,50 €', icon: '🥩' },
       { name: 'Pincho de solomillo', priceFull: '5,00 €', icon: '🍢' },
-      { name: 'Estofado de rabo', priceFull: '17,00 €', icon: '🍖' },
-    ]
+      
+   ]
   },
   {
     id: 'ensaladas',
@@ -173,27 +173,28 @@ const menuData = [
       { name: 'Solomillo (cebolla frita, crema trufa, q. cabra)', priceFull: '10,50 €', icon: '🥪' },
       { name: 'Secreto ibérico (cebolla caramelizada)', priceFull: '10,50 €', icon: '🥪' },
       { name: 'Jamón ibérico (pimientos y ali-oli)', priceFull: '10,50 €', icon: '🥪' },
-      { name: 'Solomillo de ternera', priceFull: '10,50 €', icon: '🥪' },
-      { name: 'Muffin', priceFull: '17,00 €', icon: '🧁' },
+            { name: 'Solomillo de ternera', priceFull: '10,50 €', icon: '🥪' },
+      { name: 'Estofado de rabo', priceFull: '17,00 €', icon: '🍖' },
     ]
   },
-  {
+    {
     id: 'petits-dejeuners',
     label: 'Desayunos',
     items: [
-      { name: 'Tostada', priceFull: '—', icon: '🍞' },
-      { name: 'Tostada con tomate', priceFull: '—', icon: '🍅' },
-      { name: 'Zumo natural', priceFull: '—', icon: '🧃' },
+      { name: 'Tostada con tomate', priceFull: '1,50 €', icon: '🍅' },
+      { name: 'Tostada con mantequilla y mermelada', priceFull: '1,50 €', icon: '🍞' },
+      { name: 'Tostada salada (2 ingredientes)', priceFull: '3,50 €', icon: '🥪' },
     ]
   },
   {
     id: 'desserts',
     label: 'Postres',
     items: [
-      { name: 'Tarta de queso', priceFull: '—', icon: '🍰' },
-      { name: 'Churros con chocolate', priceFull: '—', icon: '🍫' },
+      { name: 'Tarta de queso', priceFull: '5,50 €', icon: '🍰' },
+      { name: 'Churros con chocolate', priceFull: '5,50 €', icon: '🍫' },
     ]
   }
+  
 ];
 
 function renderMenu() {
