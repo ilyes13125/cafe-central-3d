@@ -1475,14 +1475,14 @@ function createCafeFacade() {
     const baseMat = new THREE.MeshStandardMaterial({ color: 0x61201c, roughness: 0.75 });
   const woodMat = createRealisticWoodMaterial(0x5a321f, 3, 1, 0.5);
   const frameMat = new THREE.MeshStandardMaterial({ color: 0x6e1420, roughness: 0.45, metalness: 0.3 });
-  const glassMat = new THREE.MeshPhysicalMaterial({
-    color: 0xf5faf8, // quasi blanc, pour ne plus teinter ce qu'on voit à travers
-    transmission: 0.97,
-    thickness: 0.02,
-    roughness: 0.02,
+    const glassMat = new THREE.MeshPhysicalMaterial({
+    color: 0xffffff, // blanc pur, plus aucune teinte
+    transmission: 0.99,
+    thickness: 0.01,
+    roughness: 0.01,
     ior: 1.5,
     metalness: 0,
-    envMapIntensity: 1,
+    envMapIntensity: 0.25, // réduit fortement le reflet de l'environnement, qui rivalisait avec la transparence
   });
   const handleMat = new THREE.MeshStandardMaterial({ color: 0x2a2a2a, metalness: 0.7, roughness: 0.3 });
 
